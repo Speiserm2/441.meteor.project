@@ -1,23 +1,16 @@
-/*
-THe sole purpose of AddPosts is to obtain entered data and add it to the db
-*/
-
 import React from 'react';
-// the following import is needed b/c the processFormDataFunction needs access to the db
-import {Posts} from './../api/posts.js';
+import {Comments} from './../api/comments.js';
 
-export default class AddPosts extends React.Component {
-  // this method will be called when someone submits the form (add post)
+export default class AddComments extends React.Component {
   processFormDataFunction(event){
-    event.preventDefault(); // this stops the page from reloading
-                      // notice the formInputNameAttribute comes from the input text box as it is the name attribute
-    let postName = event.target.formInputNameAttribute.value;
-    if (postName){ // check to make sure something was entered
-      event.target.formInputNameAttribute.value = ''; // clear out the text box
-      // insert new post
-      Posts.insert({
-        name: postName,
+    event.preventDefault();
+    let commentName = event.target.commentText.value;
+    if (commentName){
+      event.target.commentText.value = '';
+      Comments.insert({
+        name: commentName,
         votes: 0,
+        post_id: this.props.passedPostId,
       });
     }
   }
@@ -25,10 +18,9 @@ export default class AddPosts extends React.Component {
   render(){
     return (
       <div>
-                                {/*the bind(this) forces a binding  */}
         <form onSubmit={this.processFormDataFunction.bind(this)}>
-          <input type='text' name='formInputNameAttribute' placeholder='Post Name' />
-          <button>Add Post</button>
+          <input type='text' name='commentText' placeholder='Comment' />
+          <button>Add Comment</button>
         </form>
       </div>
     )

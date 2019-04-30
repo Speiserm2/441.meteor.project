@@ -1,40 +1,34 @@
-/*
-Just like how RedditApp is responsible for putting together all the components
-the AddPosts Component is responsible for putting together the individual
-Post components
-*/
 import React from 'react';
-import Post from './Post.js';
+import Comment from './Comment.js';
 import PropTypes from 'prop-types';
+import {Comments} from './../../imports/api/comments.js';
 
-export default class PostList extends React.Component {
+export default class CommentList extends React.Component {
 
-  renderPosts() {
-    {/* simple conditional to check if there are any entries in the posts object */}
-    if (this.props.posts.length === 0){
+  renderComments() {
+    let dbComments = Comments.find({post_id: this.props.passedPostId},
+      {sort: {votes: -1}} // key value pairs -1 is descending
+    ).fetch();
+    if (dbComments.length === 0){
       return (
         <div className='item'>
-          <p>There are no posts, you should contribute!</p>
+          <p>There are no comments, you should contribute!</p>
         </div>
       );
     } else {
-      {/* this was originally in client/main.js - it is the meat and potatoes of putting together the list of posts */}
-      return this.props.posts.map((post) => {
-        /* Important - the following passes a key and post object to the Post Component */
-        return <Post key={post._id} post={post}/>;
+      return dbComments.map((comment) => {
+        return <Comment key={comment._id} comment={comment}/>;
       });
     }
   }
-/* A simple and clean means of wrapping the posts in a root div container with this.renderPosts() */
   render(){
     return (
       <div>
-        {this.renderPosts()}
+        {this.renderComments()}
       </div>
     );
   }
 };
-// make sure the posts object is an array
-PostList.propTypes = {
-  posts: PropTypes.array.isRequired,
+CommentList.propTypes = {
+  comments: PropTypes.array.isRequired,
 };
